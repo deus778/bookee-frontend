@@ -1,6 +1,6 @@
 <template>
   <div class="grid-container">
-    <BookEntry v-for="book in books" :key="book.id" :title="book.name"></BookEntry>
+    <BookEntry v-for="book in books" :key="book.id" :title="book.title" :author="book.author"></BookEntry>
   </div>
 </template>
 
@@ -12,75 +12,32 @@ export default {
   components: {BookEntry},
   data() {
     return {
-      books: [
-        {
-          id: 1,
-          name: "Hergergerth"
-        },
-        {
-          id: 2,
-          name: "Hergergerth"
-        },
-        {
-          id: 3,
-          name: "Hergergerth"
-        },
-        {
-          id: 4,
-          name: "Hergergerth"
-        },
-        {
-          id: 5,
-          name: "Hergergerth"
-        },
-        {
-          id: 6,
-          name: "Hergergerth"
-        },
-        {
-          id: 7,
-          name: "Hergergerth"
-        },
-        {
-          id: 8,
-          name: "Hergergerth"
-        },
-        {
-          id: 9,
-          name: "Hergergerth"
-        },
-        {
-          id: 10,
-          name: "Hergergerth"
-        },
-        {
-          id: 11,
-          name: "Hergergerth"
-        },
-        {
-          id: 12,
-          name: "Hergergerth"
-        },
-        {
-          id: 13,
-          name: "Hergergerth"
-        },
-        {
-          id: 14,
-          name: "Hergergerth"
-        },
-        {
-          id: 15,
-          name: "Hergergerth"
-        },
-        {
-          id: 16,
-          name: "Hergergerth"
-        },
-
-      ]
+      books: []
     }
   },
+  methods: {
+    fetchBooks() {
+      fetch('http://localhost:8080/books').then(function (response) {
+        if (response.status !== 200) {
+          throw response.status;
+        } else {
+          return response.json();
+        }
+      }).then((data) => {
+        console.log('process data', data);
+        for (const id in data) {
+          this.books.push({
+            title: data[id].title,
+            author: data[id].authors[0].firstName + " " + data[id].authors[0].lastName
+          })
+          console.log(this.books);
+        }
+      });
+    }
+  },
+  created() {
+    this.fetchBooks();
+  }
 }
 </script>
 
